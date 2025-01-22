@@ -3,52 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports - Maize Disease Classification</title>
+    <title>MaizeGuard - Reports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .scan-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .scan-image:hover {
+            transform: scale(1.1);
+        }
+        .status-badge {
+            font-size: 0.9rem;
+            padding: 0.5em 0.75em;
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Maize Disease Classifier</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/reports">Reports</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<body class="bg-light">
+    <!-- Unified Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <!-- Same navigation as home.html -->
     </nav>
 
-    <div class="container mt-5">
-        <h1 class="text-center">Upload Maize Leaf Image</h1>
-        <form action="/predict" method="POST" enctype="multipart/form-data" class="text-center">
-            <div class="mb-3">
-                <input type="file" class="form-control" name="file" accept="image/*" required>
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Upload Card -->
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="bi bi-cloud-upload"></i> New Scan
+                        </h3>
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="file" accept="image/*" required>
+                                <div class="form-text">Max file size: 2MB (JPEG, PNG)</div>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-magic"></i> Analyze Image
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Predict</button>
-        </form>
 
-        {% if result %}
-        <div class="mt-5 text-center">
-            <h2>Prediction Result:</h2>
-            <p class="lead">{{ result }}</p>
+            <!-- Scan History -->
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="bi bi-clock-history"></i> Scan History
+                        </h3>
+                        
+                        {% if scans %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Image</th>
+                                        <th>Diagnosis</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for scan in scans %}
+                                    <tr>
+                                        <td>{{ scan.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <img src="{{ url_for('static', filename='uploads/' + scan.filename) }}" 
+                                                 class="scan-image" 
+                                                 data-bs-toggle="modal" 
+                                                 data-bs-target="#imageModal-{{ loop.index }}">
+                                        </td>
+                                        <td>{{ scan.prediction }}</td>
+                                        <td>
+                                            <span class="badge rounded-pill 
+                                                {% if scan.prediction == 'Healthy' %}bg-success
+                                                {% else %}bg-danger{% endif %} status-badge">
+                                                {{ 'Healthy' if scan.prediction == 'Healthy' else 'Diseased' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-info-circle"></i> No scan history found. Upload your first image!
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-        {% endif %}
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Image preview modal handler
+        document.querySelectorAll('.scan-image').forEach(img => {
+            img.addEventListener('click', function() {
+                document.getElementById('modalImage').src = this.src;
+                new bootstrap.Modal(document.getElementById('imageModal')).show();
+            });
+        });
+    </script>
 </body>
 </html>

@@ -5,6 +5,7 @@ import torch
 from torchvision import transforms, models
 from PIL import Image
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -12,6 +13,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+# Ensure the uploads folder exists
+UPLOAD_FOLDER = 'static/uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 # Load the trained model
 model = models.resnet18(weights=None)
@@ -36,6 +42,9 @@ class User(db.Model, UserMixin):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Scan history (for demonstration purposes)
+scan_history = []
+
 # Routes
 @app.route('/')
 def home():
@@ -57,6 +66,12 @@ def reports():
             flash('No file selected', 'danger')
             return redirect(request.url)
         if file:
+            # Save the uploaded file
+            filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}"
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
+
+            # Process the image and make a prediction
             image = Image.open(file.stream).convert('RGB')
             image = transform(image).unsqueeze(0)
             with torch.no_grad():
@@ -64,9 +79,17 @@ def reports():
             _, predicted = torch.max(output, 1)
             classes = ['Healthy', 'Grey-leaf-spot', 'Common-rust', 'Blight']
             result = classes[predicted.item()]
+
+            # Add the scan to the history
+            scan_history.append({
+                'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'image_filename': filename,
+                'prediction': result
+            })
+
             flash(f'Prediction: {result}', 'success')
             return redirect(url_for('reports'))
-    return render_template('reports.html', user=current_user)
+    return render_template('reports.html', scan_history=scan_history, user=current_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -3,42 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Maize Disease Classification</title>
+    <title>MaizeGuard - About</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #28a745;
+        }
+        .tech-badge {
+            background: #e9f5eb;
+            color: #28a745;
+            padding: 0.5em 1em;
+            border-radius: 20px;
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Maize Disease Classifier</a>
+<body class="bg-light">
+    <!-- Unified Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="/">🌽 MaizeGuard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/reports">Reports</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">Sign Up</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/about">About</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="/reports">Reports</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1 class="text-center">About the Project</h1>
-        <p class="lead">This project aims to help farmers identify diseases in maize crops using machine learning. By uploading an image of maize leaves, the system can detect whether the crop is affected by Blight, Grey Leaf Spot, Common Rust, or if it is Healthy.</p>
-        <p>The system uses a ResNet18 convolutional neural network (CNN) trained on a dataset of maize leaf images. It provides quick and accurate predictions to assist farmers in taking timely action to protect their crops.</p>
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- About Section -->
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h1 class="card-title mb-4">
+                            <i class="bi bi-info-circle"></i> About MaizeGuard
+                        </h1>
+                        <p class="lead text-success">
+                            Revolutionizing agricultural disease detection through AI technology
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="bi bi-gear"></i> How It Works
+                        </h3>
+                        <div class="list-group">
+                            <div class="list-group-item border-0">
+                                <i class="bi bi-camera feature-icon"></i>
+                                <h5 class="mt-2">1. Capture Image</h5>
+                                <p>Take a clear photo of maize leaves using your smartphone or camera</p>
+                            </div>
+                            <div class="list-group-item border-0">
+                                <i class="bi bi-cloud-upload feature-icon"></i>
+                                <h5>2. Upload & Analyze</h5>
+                                <p>Submit the image through our secure platform</p>
+                            </div>
+                            <div class="list-group-item border-0">
+                                <i class="bi bi-clipboard-data feature-icon"></i>
+                                <h5>3. Get Results</h5>
+                                <p>Receive instant diagnosis with prevention recommendations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technology Stack -->
+            <div class="col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="bi bi-cpu"></i> Technology
+                        </h3>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="tech-badge"><i class="bi bi-file-earmark-code"></i> Python</span>
+                            <span class="tech-badge"><i class="bi bi-diagram-3"></i> ResNet-18</span>
+                            <span class="tech-badge"><i class="bi bi-database"></i> SQLite</span>
+                            <span class="tech-badge"><i class="bi bi-shield-check"></i> Flask</span>
+                            <span class="tech-badge"><i class="bi bi-braces"></i> Bootstrap 5</span>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Supported Diseases</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i> Common Rust
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i> Grey Leaf Spot
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i> Blight
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i> Healthy Detection
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

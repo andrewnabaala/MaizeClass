@@ -3,46 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maize Disease Classification</title>
+    <title>MaizeGuard - Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .upload-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-area {
+            border: 2px dashed #28a745;
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: #218838;
+        }
+
+        #previewContainer {
+            display: none;
+            max-width: 300px;
+            margin: 1rem auto;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Maize Disease Classifier</a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="/">🌽 MaizeGuard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/reports">Reports</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">Sign Up</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="/reports">Reports</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1 class="text-center">Welcome to Maize Disease Classifier</h1>
-        <p class="lead text-center">Upload an image of maize leaves to detect if they are affected by Blight, Grey Leaf Spot, Common Rust, or if they are Healthy.</p>
-        <div class="text-center">
-            <a href="/reports" class="btn btn-primary btn-lg">Get Started</a>
+    <!-- Main Content -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="upload-card">
+                        <div class="text-center mb-4">
+                            <h1 class="display-5 fw-bold mb-3">Detect Maize Diseases</h1>
+                            <p class="lead text-muted">Upload clear images of maize leaves for instant analysis</p>
+                        </div>
+
+                        <!-- Upload Section -->
+                        <form action="/reports" method="POST" enctype="multipart/form-data">
+                            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                                <div class="text-center">
+                                    <i class="bi bi-cloud-upload fs-1 text-success"></i>
+                                    <h5 class="mt-2">Click to Upload</h5>
+                                    <p class="text-muted mb-0">Supports JPG, PNG (Max 2MB)</p>
+                                </div>
+                                <input type="file" 
+                                       id="fileInput" 
+                                       name="file" 
+                                       class="d-none" 
+                                       accept="image/*" 
+                                       required
+                                       onchange="previewImage(event)">
+                            </div>
+
+                            <!-- Image Preview -->
+                            <div id="previewContainer" class="mt-4">
+                                <img id="imagePreview" class="img-fluid">
+                                <button type="button" 
+                                        class="btn btn-danger btn-sm mt-2" 
+                                        onclick="clearImage()">
+                                    <i class="bi bi-x-circle"></i> Remove
+                                </button>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-magic"></i> Analyze Now
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Image Preview Script -->
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImage = document.getElementById('imagePreview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function clearImage() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('imagePreview').src = '';
+        }
+    </script>
 </body>
 </html>
