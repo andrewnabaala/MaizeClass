@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Maize Disease Prediction{% endblock %}
+
+{% block content %}
+    <div class="prediction-container">
+        <h1 style="color: white;">Maize Disease Prediction</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="file-upload" class="file-upload-label">
+                <span>Choose Image</span>
+                <input id="file-upload" type="file" name="file" accept="image/*" required>
+            </label>
+            <button type="submit" class="btn">Upload and Predict</button>
+        </form>
+
+        {% if predicted_class %}
+            <div class="prediction-result">
+                <h2>Prediction Result</h2>
+                <p><strong>Predicted Class:</strong> {{ predicted_class }}</p>
+                <div class="image-container">
+                    <img src="{{ image_url }}" alt="Uploaded Image">
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Script to handle file input styling -->
+    <script>
+        document.getElementById('file-upload').addEventListener('change', function() {
+            var fileName = this.files[0].name;
+            var nextSibling = this.nextElementSibling;
+            nextSibling.innerText = fileName;
+        });
+    </script>
+{% endblock %}

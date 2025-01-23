@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Login - MaizeGuard{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to continue predictions</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="auth-alert auth-alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-container">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-container">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="auth-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                Login to Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span>Don't have an account?</span>
+            <a href="{{ url_for('main.register') }}" class="auth-link">Create Account</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .auth-card {
+        background: rgba(255, 255, 255, 0.98);
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 440px;
+        backdrop-filter: blur(10px);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-title {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    .auth-form .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-form label {
+        display: block;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .input-container {
+        position: relative;
+        width: 100%;
+    }
+
+    .input-container i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+    }
+
+    .auth-form input {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 40px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box; /* Add this */
+        overflow: hidden; /* Add this */
+        text-overflow: ellipsis;
+    }
+
+    .auth-form input:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    .auth-btn {
+        width: 100%;
+        padding: 1rem;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .auth-btn:hover {
+        background: #45a049;
+        transform: translateY(-1px);
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    .auth-link {
+        color: #4CAF50;
+        text-decoration: none;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .auth-link:hover {
+        text-decoration: underline;
+    }
+
+    .auth-alert {
+        padding: 0.875rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .auth-alert-error {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+    }
+
+    .auth-alert-success {
+        background: #dcfce7;
+        color: #16a34a;
+        border: 1px solid #86efac;
+    }
+
+    @media (max-width: 480px) {
+        .auth-container {
+            padding: 1rem;
+        }
+        
+        .auth-card {
+            padding: 1.5rem;
+        }
+        
+        .auth-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
